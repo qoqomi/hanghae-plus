@@ -41,6 +41,22 @@ Worker.prototype.work = function () {
 
 //- 여기에 코드를 작성하세요
 
+JuniorEngineer.prototype._super = function (health) {
+  Worker.call(this, health);
+};
+
+JuniorEngineer.prototype.work = function () {
+  Worker.prototype.work.call(this);
+  this._intelligence++;
+};
+
+JuniorEngineer.prototype.getIntelligence = function () {
+  return this._intelligence; // 주니어 엔지니어의 지능을 반환
+};
+
+JuniorEngineer.prototype.getHealth = function () {
+  return this._health;
+};
 /**
  * ## 문제 A - 추가문제
  *
@@ -76,7 +92,7 @@ Worker.prototype.work = function () {
 
 // main();
 
-JuniorEngineer.module.exports = {
+module.exports = {
   Worker,
   JuniorEngineer,
 };
