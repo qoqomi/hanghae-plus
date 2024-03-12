@@ -34,6 +34,11 @@ function JuniorEngineer(health, intelligence) {
 Worker.prototype.getHealth = function () {
   return this._health;
 };
+
+Worker.prototype.work = function () {
+  this._health--;
+};
+
 //- 여기에 코드를 작성하세요
 
 /**
@@ -71,7 +76,7 @@ Worker.prototype.getHealth = function () {
 
 // main();
 
-module.exports = {
+JuniorEngineer.module.exports = {
   Worker,
   JuniorEngineer,
 };
