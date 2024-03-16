@@ -19,7 +19,7 @@
 
 // 생성자 함수는 수정하지 마세요
 function Worker(health) {
-  this._health = health ?? 10;
+  this._health = health ?? 10; // _health라는 새 객체를 생성한다.
 }
 
 function JuniorEngineer(health, intelligence) {
@@ -32,11 +32,11 @@ function JuniorEngineer(health, intelligence) {
 //- 생성자 함수는 수정하지 마세요
 
 Worker.prototype.getHealth = function () {
-  return this._health;
+  this._health; // return하지 않으면 Recevied되는 반환값이 없다.
 };
 
 Worker.prototype.work = function () {
-  this._health--;
+  this._health--; // Worker.prototype.work 의 function 생성 => _health객체의 값을 -해준다.
 };
 
 //- 여기에 코드를 작성하세요
@@ -80,17 +80,17 @@ JuniorEngineer.prototype.getHealth = function () {
  * - V8 엔진의 히든클래스 개념을 이해하고 이 개념을 응용하여 최적화 해보세요.
  * - ES 모듈시스템으로 바꾼뒤, 확장자를 .mjs로 변경한 뒤 실행해보세요. 최적화 결과가 같을까요?
  */
-// function main() {
-//   var startTime = performance.now();
-//   for (var i = 0; i < 10000000; i++) {
-//     new JuniorEngineer(10, Math.floor(Math.random() * 20)).isBornGenius();
-//   }
-//   var endTime = performance.now();
+function main() {
+  var startTime = performance.now();
+  for (var i = 0; i < 10000000; i++) {
+    new JuniorEngineer(10, Math.floor(Math.random() * 20)).isBornGenius();
+  }
+  var endTime = performance.now();
 
-//   console.log(endTime - startTime);
-// }
+  console.log(endTime - startTime);
+}
 
-// main();
+main();
 
 module.exports = {
   Worker,

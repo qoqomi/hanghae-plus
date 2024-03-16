@@ -1,5 +1,6 @@
 {
   "private": true,
+  "scripts": {"start":"/packages/a.js"},
   "workspaces": {
     "packages": [
       "packages/*"
