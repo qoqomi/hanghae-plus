@@ -2,30 +2,28 @@ export function jsx(type, props, ...children) {
   const element = {
     type,
     props,
-    children,
+    children: children.flat(),
   };
-
-  if (props) {
-    const classname = Object?.entries(props).map(([key, value]) => {
-      return `${key}=${value}`;
-    });
-
-    const attributes = classname.join(" ");
-
-    let childrenHTML = "";
-    children.forEach((child) => {
-      childrenHTML += typeof child === "string" ? child : jsxToString(child);
-    });
-
-    return `<${element.type}${props ? " " + attributes : ""}>${childrenHTML}</${
-      element.type
-    }>`;
-  }
-
-  return `<${element.type}>${children.map((item) => item)}</${element.type}>`;
+  return element;
 }
 
 export function createElement(node) {
+  if (node === null || node === undefined) {
+    return document.createDocumentFragment();
+  }
+  if (typeof node === "string") {
+    return document.createTextNode(node);
+  }
+  const { type, props, children } = node;
+  const element = document.createElement(type);
+  //props { id: 'test-id', class: 'test-class' }
+  console.log("props", props);
+  console.log("children", children);
+  Object.entries(props || {}).forEach(([att, value]) => {
+    element.setAttribute(key, value);
+  });
+
+  return element;
   // jsx를 dom으로 변환
 }
 
@@ -47,36 +45,24 @@ export function render(parent, newNode, oldNode, index = 0) {
   //   parent에서 oldNode를 제거
   //   종료
   if (!newNode && oldNode) {
-    parent.innerHTML = "";
+    parent.removeChild(parent.childNode[index]);
     return;
   }
   // 2. 만약 newNode가 있고 oldNode가 없다면
   //   newNode를 생성하여 parent에 추가
   //   종료
   if (newNode && !oldNode) {
-    //TODO: 확인 필요
-    // parent.innerHTML += newNode;
-    parent.innerHTML;
+    parent.appendChild(createElement(newNode));
     return;
   }
 
   // 3. 만약 newNode와 oldNode 둘 다 문자열이고 서로 다르다면
   //   oldNode를 newNode로 교체
   //   종료
-  if (typeof newNode === "string" && typeof oldNode === "string") {
-    if (newNode !== oldNode) {
-      parent.innerHTML = newNode;
-    }
-    return;
-  }
 
   // 4. 만약 newNode와 oldNode의 타입이 다르다면
   //   oldNode를 newNode로 교체
   //   종료
-  if (typeof newNode !== typeof oldNode) {
-    parent.innerHTML = newNode;
-    return;
-  }
 
   // 5. newNode와 oldNode에 대해 updateAttributes 실행
   updateAttributes(parent, newNode, oldNode);
