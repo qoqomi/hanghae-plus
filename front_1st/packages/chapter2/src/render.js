@@ -8,21 +8,20 @@ export function jsx(type, props, ...children) {
 }
 
 export function createElement(node) {
-  if (node === null || node === undefined) {
-    return document.createDocumentFragment();
-  }
   if (typeof node === "string") {
     return document.createTextNode(node);
   }
   const { type, props, children } = node;
   const element = document.createElement(type);
   //props { id: 'test-id', class: 'test-class' }
-  console.log("props", props);
-  console.log("children", children);
   Object.entries(props || {}).forEach(([att, value]) => {
-    element.setAttribute(key, value);
+    element.setAttribute(att, value);
   });
-
+  children.forEach((child) => {
+    // appendChild의 요소는 DOM요소이다.
+    const childElement = createElement(child);
+    element.appendChild(childElement);
+  });
   return element;
   // jsx를 dom으로 변환
 }
