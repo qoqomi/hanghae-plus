@@ -25,10 +25,10 @@ describe("hooks test", () => {
       const { useState } = createHooks(render);
 
       const { setA } = render();
-      expect(render).toBeCalled(1);
+      expect(render).toBeCalled(1); // 1번 이상 호출되면 참
 
       setA("test");
-      expect(render).toBeCalled(2);
+      expect(render).toBeCalled(2); // 2번 이상 호출되면 참
     });
 
     test("state의 값이 이전과 동일할 경우, 다시 실행되지 않는다.", () => {
@@ -51,13 +51,13 @@ describe("hooks test", () => {
 
     test("hook의 callback이 실행 되기 이전에 resetContext를 실행해야 값이 정상적으로 반영된다.", () => {
       let result = "";
+
       const render = vi.fn(() => {
         const [a, setA] = useState("foo");
         const [b, setB] = useState("bar");
 
-        result = `a: ${a}, b: ${b}`;
+        result = `a: ${a}, b: ${b}`; //변경값이 담겨야함
 
-        expect(result).toBe(`a: foo`);
         return { setA, setB };
       });
 

@@ -1,41 +1,35 @@
 export function createHooks(callback) {
   let states = [];
-  let initialStateKey = 0;
+  let currentIndex = 0;
 
   const useState = (initState) => {
-    // console.log("states✅", states);
-    if (states.length === initialStateKey) {
+    const index = currentIndex;
+
+    if (states[index] === undefined) {
       states.push(initState);
     }
 
-    console.log("1️⃣", states);
-    const state = states[initialStateKey];
+    const state = states[index];
 
     const setState = (newState) => {
-      console.log("newState", newState);
-      if ((initState === "newState", newState)) {
+      if (states[index] === newState) {
         // * initState와 newState값이 일치하면 반환한다.
         return;
       }
-      states[initialStateKey] = newState;
-      console.log("2️⃣", states);
+      states[index] = newState;
 
       callback();
     };
 
-    initialStateKey++;
+    currentIndex += 1;
 
     return [state, setState];
   };
 
-  const useMemo = (fn, refs) => {
-    return fn();
-  };
+  const useMemo = (fn, refs) => {};
 
   const resetContext = () => {
-    console.log("3️⃣", states);
-
-    // TODO:  callback이 실행되기 이전에 resetContext를 실행해야 값이 정상적으로 반영된다.
+    currentIndex = 0;
   };
 
   return { useState, useMemo, resetContext };
