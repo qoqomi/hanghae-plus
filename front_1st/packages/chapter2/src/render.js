@@ -7,18 +7,23 @@ export function jsx(type, props, ...children) {
   return element;
 }
 
+// VirtualDom을 realDom으로 변경하는 과정
 export function createElement(node) {
   // jsx를 dom으로 변환
   // Q. 이 코드가 없으면 작동하지 않음
+  // A. string 타입일 수 있다. 예를 들어 h태그를 넣어 돔 생성!
   if (typeof node === "string") {
     return document.createTextNode(node);
   }
   const { type, props, children } = node;
   const element = document.createElement(type);
   //props { id: 'test-id', class: 'test-class' }
-  Object.entries(props || {}).forEach(([att, value]) => {
-    element.setAttribute(att, value);
-  });
+  Object.entries(props || {})
+    .filter(([att, value]) => value)
+    .forEach(([att, value]) => {
+      element.setAttribute(att, value);
+    });
+
   children.forEach((child) => {
     // appendChild의 요소는 DOM요소이다.
     const childElement = createElement(child);
@@ -44,15 +49,15 @@ function updateAttributes(target, newProps, oldProps) {
   //     다음 속성으로 넘어감 (속성 유지 필요)
   //   만약 newProps들에 해당 속성이 존재하지 않는다면
   //     target에서 해당 속성을 제거
-  for (const attr of Object.keys(oldProps)) {
-    if (newProps[attr] !== undefined) continue;
-    target.removeAttribute(attr);
+  for (const key of Object.keys(oldProps)) {
+    if (newProps[key] !== undefined) {
+      target.removeAttribute(key);
+      continue;
+    }
   }
 }
 
 export function render(parent, newNode, oldNode, index = 0) {
-  // childNode와 childNodes의 차이가 뭐지? 그리고 왜 교체할 때 childNodes를 사용하는거지?
-
   // 1. 만약 newNode가 없고 oldNode만 있다면
   //   parent에서 oldNode를 제거
   //   종료
@@ -72,9 +77,11 @@ export function render(parent, newNode, oldNode, index = 0) {
   //   oldNode를 newNode로 교체
   //   종료
   if (typeof newNode === "string" && typeof oldNode === "string") {
-  }
-  if (newNode !== oldNode) {
-    parent.replaceChild(createElement(newNode), parent.childNodes[index]);
+    if (newNode === oldNode) return;
+    return parent.replaceChild(
+      createElement(newNode),
+      parent.childNodes[index]
+    );
   }
 
   // 4. 만약 newNode와 oldNode의 타입이 다르다면
@@ -93,9 +100,12 @@ export function render(parent, newNode, oldNode, index = 0) {
 
   // 6. newNode와 oldNode 자식노드들 중 더 긴 길이를 가진 것을 기준으로 반복
   //   각 자식노드에 대해 재귀적으로 render 함수 호출
-  const max = Math.max(newNode.children.length, oldNode.children.length);
-  for (let i = 0; i < max; i++) {
-    //
+  const newChildren = newNode.children || [];
+  const oldChildren = oldNode.childNodes || [];
 
-  //@ 자기자신을 호출하는 것?
+  const maxLength = Math.max(newChildren.length, oldChildren.length);
+
+  for (let i = 0; i < maxLength; i += 1) {
+    render(parent.childNodes[index], newChildren[i], oldChildren[i]);
+  }
 }
