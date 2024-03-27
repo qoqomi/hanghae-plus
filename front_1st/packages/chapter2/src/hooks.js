@@ -4,18 +4,19 @@ export function createHooks(callback) {
 
   const useState = (initState) => {
     const index = currentIndex;
-
-    if (states[index] === undefined) {
+    // states의 내부 데이터 초기값 설정
+    if (states.length === index) {
       states.push(initState);
     }
-
+    // state : 초기값을 담은 변수
     const state = states[index];
 
     const setState = (newState) => {
-      // * initState와 newState값이 일치하면 반환한다.
+      // setState 내부에서는 newState가 변환이 없는 경우 실행 중지
       if (states[index] === newState) {
         return;
       }
+      // 새로운 값으로 변경되는 경우 newState로 업데이트
       states[index] = newState;
 
       callback();
@@ -29,8 +30,6 @@ export function createHooks(callback) {
   const isSameValue = (a, b) => {
     const max = Math.max(a.length, b.length);
     for (let i = 0; i < max; i += 1) {
-      console.log("ref", a[i], b[i].refs);
-
       if (a[i] === b[i].refs[0]) {
         return true;
       }
@@ -40,7 +39,6 @@ export function createHooks(callback) {
 
   const useMemo = (fn, refs) => {
     const index = currentIndex;
-    // TODO :refs [1] useMemo의 값을 변경하고 싶으면 의존하는 값을 수정해야한다.
 
     // 최초시작 혹은 디펜던시가 변경된 경우
     if (states[index] === undefined || !isSameValue(refs, states)) {

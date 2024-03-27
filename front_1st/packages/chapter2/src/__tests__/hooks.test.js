@@ -56,8 +56,7 @@ describe("hooks test", () => {
         const [a, setA] = useState("foo");
         const [b, setB] = useState("bar");
 
-        result = `a: ${a}, b: ${b}`; //변경값이 담겨야함
-
+        result = `a: ${a}, b: ${b}`;
         return { setA, setB };
       });
 
